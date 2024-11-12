@@ -15,13 +15,13 @@ public class ExamSession {
         this.startTime = System.currentTimeMillis();
     }
 
-    public void submit(List<String> answers) {
+    /*public void submit(List<String> answers) {
         this.endTime = System.currentTimeMillis();
         int score = quiz.calculateScore(answers);
         long timeTaken = (endTime - startTime) / (1000 * 60); // chuyển đổi mili giây sang phút
-        Result result = new Result(student, quiz, score, (int) timeTaken);
+        Result result = new Result( quiz, score);
         result.display();
     }
-
+	*/
     // Getters and Setters
 }

@@ -1,26 +1,53 @@
 
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Result {
-	// class để coi kết quả 
-    private Student student;
-    private Quiz quiz;
+    private String quizName;
     private int score;
-    private int timeTaken;
-    
-    //class này cũng chưa sử dụng 
-    public Result(Student student, Quiz quiz, int score, int timeTaken) {
-        this.student = student;
-        this.quiz = quiz;
+    private int totalQuestions;
+    private String dateTaken;
+    private List<Answer> answers;
+
+ // Constructor
+    public Result(String quizName, int score, int totalQuestions, String dateTaken, List<Answer> answer) {
+        this.quizName = quizName;
         this.score = score;
-        this.timeTaken = timeTaken;
+        this.totalQuestions = totalQuestions;
+        this.dateTaken = dateTaken;
+        this.answers = answer;
     }
 
-    public void display() {
-        System.out.println("Student: " + student.username);
-        System.out.println("Quiz: " + quiz.getTitle());
-        System.out.println("Score: " + score);
-        System.out.println("Time Taken: " + timeTaken + " minutes");
+ // Hiển thị chi tiết kết quả, bao gồm danh sách câu hỏi
+    public void displayDetailedResult() {
+        System.out.println("Quiz Name: " + quizName);
+        System.out.println("Score: " + score + " / " + totalQuestions);
+        System.out.println("Date Taken: " + dateTaken);
+        System.out.println("Questions and Answers:");
+        
+        for (Answer answer : answers) {
+            answer.displayQuestionDetails();
+        }
+        
+        System.out.println("-------------------------");
     }
 
-    // Getters and Setters
+    // Getters và setters nếu cần
+    public String getQuizName() {
+        return quizName;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getTotalQuestions() {
+        return totalQuestions;
+    }
+
+    public String getDateTaken() {
+        return dateTaken;
+    }
 }

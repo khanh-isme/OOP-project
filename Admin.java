@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-
+// chưa sử dụng class này 
 public class Admin extends User {
     private List<User> users;
 
