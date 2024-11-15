@@ -1,4 +1,6 @@
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 
@@ -7,8 +9,9 @@ public class Main {
 
     public static void main(String[] args) {
         // Đường dẫn đến file chứa dữ liệu
-        String fileName = "C:\\Users\\MSI-PC\\eclipse-workspace\\project-in-school\\bin\\data.txt"; // Đảm bảo rằng file này tồn tại và có dữ liệu đúng định dạng
-
+        String fileName = "data.txt"; // Đảm bảo rằng file này tồn tại và có dữ liệu đúng định dạng
+        
+        String fileName1="data1.txt";
         // Tạo Bank từ dữ liệu trong file
         Bank bank = BankDataLoader.loadBankFromFile(fileName);
 
@@ -19,9 +22,25 @@ public class Main {
         } else {
             System.out.println("Không thể tải dữ liệu từ file.");
         }
+        
+        List<User> users =BankDataLoader.readFileAndParseUsers(fileName1);
+        
+        if (users != null) {
+            System.out.println("Dữ liệu đã được tải thành công từ file:");
+            for (User user : users) {
+                System.out.println(user);
+            }
+        } else {
+            System.out.println("Không thể tải dữ liệu từ file.");
+        }
+        
 
+        
+        
+        
+        
         // Khởi tạo App và chạy chương trình
-        App app = new App(bank);
+        App app = new App(bank,users);
         app.run();
     }
 }

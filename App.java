@@ -9,11 +9,12 @@ public class App {
     private Bank bank;
     private Scanner sc;     // Để đọc đầu vào từ bàn phím
 
-    public App(Bank bank) {
-        system = new Ssystem();
+    public App(Bank bank,List<User> user) {
+        system = new Ssystem(user);
         sc = new Scanner(System.in);
-        setupSampleData(); // Thiết lập dữ liệu mẫu ban đầu
+        //setupSampleData(); // Thiết lập dữ liệu mẫu ban đầu
         this.bank=bank;
+        
     }
 
     // Phương thức để khởi chạy ứng dụng
@@ -49,10 +50,12 @@ public class App {
             System.out.println("Invalid username or password. Please try again.");
         } else {
             if (loggedInUser instanceof Student) {
-                runStudentMenu((Student) loggedInUser);
+                runStudentMenu((Student) loggedInUser);	
             } else if (loggedInUser instanceof Teacher) {
                 runTeacherMenu((Teacher) loggedInUser);
-            } else {
+            } else if (loggedInUser instanceof Admin) {
+                runAdminMenu((Admin) loggedInUser);
+            }else {
                 System.out.println("Unknown user type.");
             }
         }
@@ -68,13 +71,13 @@ public class App {
         int choice = Integer.parseInt(sc.nextLine());
 
         if (choice == 1) {
-            Teacher teacher = new Teacher(username, password);
+            Teacher teacher = new Teacher(username, password,"teacher");
             system.registerUser(teacher);
             System.out.println("Teacher account registered successfully.");
         } else if (choice == 2) {
             System.out.print("Enter Student ID: ");
             String studentId = sc.nextLine();
-            Student student = new Student(username, password, studentId);
+            Student student = new Student(username, password, "student",studentId);
             system.registerUser(student);
             System.out.println("Student account registered successfully.");
         } else {
@@ -85,9 +88,10 @@ public class App {
     private void runStudentMenu(Student student) {
         while (true) {
             System.out.println("Welcome, " + student.getUsername());
+            System.out.println("\n=== Student Menu ===");
             System.out.println("1. Take Quiz");
             System.out.println("2. reviewInfo");
-            System.out.println("3. viewExamSchedule");
+            System.out.println("3. view ExamSchedule");
             System.out.println("4. View Detailed Quiz History");
             System.out.println("5. Logout");
             System.out.print("Choose an option: ");
@@ -112,11 +116,14 @@ public class App {
     private void runTeacherMenu(Teacher teacher) {
         while (true) {
             System.out.println("Welcome, " + teacher.getUsername());
+            System.out.println("\n=== Teacher Menu ===");
             System.out.println("1. Create Quiz");
-            System.out.println("2. info");
-            System.out.println("3. view");
-            System.out.println("4. editData");
-            System.out.println("5. Logout");
+            System.out.println("2. infomation");
+            System.out.println("3. view Bank");
+            System.out.println("4. edit Bank");
+            System.out.println("5. delete Bank");
+            System.out.println("6. saveData");
+            System.out.println("7. Logout");
             System.out.print("Choose an option: ");
             int option = Integer.parseInt(sc.nextLine());
 
@@ -134,13 +141,134 @@ public class App {
                 	editData(bank);
                 	break;
                 case 5:
-                    return; // Quay lại màn hình đăng nhập
+                	deleteBank(bank);
+                	break;
+                case 6:
+                	bank.writeDataToFile("data.txt");
+                    break; 
+                case 7:
+                	return;
                 default:
                     System.out.println("Invalid option. Try again.");
             }
         }
     }
     
+    private void runAdminMenu(Admin admin) {
+    	admin.addlistUser(system.getUsers());
+    while (true) {
+        // Hiển thị menu
+        System.out.println("\n=== Admin Menu ===");
+        System.out.println("1. Thêm người dùng");
+        System.out.println("2. Xóa người dùng");
+        System.out.println("3. Chỉnh sửa thông tin Student");
+        System.out.println("4. Chỉnh sửa thông tin Teacher");
+        System.out.println("5. Hiển thị danh sách người dùng");
+        System.out.println("6. lưu");
+        System.out.println("7. Thoát");
+        System.out.print("Chọn chức năng: ");
+
+        int choice = Integer.parseInt(sc.nextLine());
+
+        switch (choice) {
+            case 1: // Thêm người dùng
+                System.out.print("Loại người dùng (1-Student, 2-Teacher): ");
+                int userType = Integer.parseInt(sc.nextLine());
+
+                System.out.print("Nhập username: ");
+                String username = sc.nextLine();
+                System.out.print("Nhập password: ");
+                String password = sc.nextLine();
+
+                if (userType == 1) {
+                    System.out.print("Nhập MSSV: ");
+                    String mssv = sc.nextLine();
+                    System.out.print("Nhập role: ");
+                    String role = sc.nextLine();
+                    Student student = new Student(username, password, role, mssv);
+                    admin.addUser(student);
+                } else if (userType == 2) {
+                    Teacher teacher = new Teacher(username, password, username);
+                    admin.addUser(teacher);
+                } else {
+                    System.out.println("Loại người dùng không hợp lệ.");
+                }
+                break;
+
+            case 2: // Xóa người dùng
+                System.out.print("Nhập username người dùng cần xóa: ");
+                String usernameToRemove = sc.nextLine();
+                User userToRemove = null;
+
+                for (User user : system.getUsers()) {
+                    if (user.getUsername().equals(usernameToRemove)) {
+                        userToRemove = user;
+                        break;
+                    }
+                }
+
+                if (userToRemove != null) {
+                    admin.removeUser(userToRemove);
+                    System.out.println("Người dùng đã được xóa.");
+                } else {
+                    System.out.println("Không tìm thấy người dùng.");
+                }
+                break;
+
+            case 3: // Chỉnh sửa Student
+                System.out.print("Nhập username của Student cần chỉnh sửa: ");
+                String studentUsername = sc.nextLine();
+                Student studentToEdit = null;
+
+                for (User user : system.getUsers()) {
+                    if (user instanceof Student && user.getUsername().equals(studentUsername)) {
+                        studentToEdit = (Student) user;
+                        break;
+                    }
+                }
+
+                if (studentToEdit != null) {
+                    admin.editforStudent(studentToEdit);
+                } else {
+                    System.out.println("Không tìm thấy Student.");
+                }
+                break;
+
+            case 4: // Chỉnh sửa Teacher
+                System.out.print("Nhập username của Teacher cần chỉnh sửa: ");
+                String teacherUsername = sc.nextLine();
+                Teacher teacherToEdit = null;
+
+                for (User user : system.getUsers()) {
+                    if (user instanceof Teacher && user.getUsername().equals(teacherUsername)) {
+                        teacherToEdit = (Teacher) user;
+                        break;
+                    }
+                }
+
+                if (teacherToEdit != null) {
+                    admin.editforTeacher(teacherToEdit);
+                } else {
+                    System.out.println("Không tìm thấy Teacher.");
+                }
+                break;
+
+            case 5: // Hiển thị danh sách người dùng
+                System.out.println("Danh sách người dùng:");
+                admin.showUser(system.getUsers());
+                break;
+            
+            case 6:
+            	system.writeUsersToFile(system.getUsers(), "data1.txt");
+            case 7: // Thoát
+                System.out.println("Thoát chương trình.");
+                return;
+             
+            default:
+                System.out.println("Lựa chọn không hợp lệ. Vui lòng thử lại.");
+        }
+    }
+}
     
     
    
@@ -214,8 +342,7 @@ public class App {
         String title = sc.nextLine();
         System.out.print("Enter quiz time limit (in minutes): ");
         int timeLimit = Integer.parseInt(sc.nextLine());
-        Quiz quiz = new Quiz(title,timeLimit);
-        
+        Quiz quiz = new Quiz(title,timeLimit);       
          
 
         while (true) {
@@ -243,6 +370,8 @@ public class App {
                 break;
             }
         }
+        
+        teacher.addquizzesCreated(quiz);
         subjectnew.addQuiz(quiz);
         bank.addSubject(subjectnew);
     }
@@ -292,15 +421,11 @@ public class App {
             }
         }
     }
-
-    
-    
-    
     
     
 
     // Thiết lập dữ liệu mẫu ban đầu cho hệ thống
-    private void setupSampleData() {
+    /*private void setupSampleData() {
         // Tạo giáo viên và thêm vào hệ thống
         Teacher teacher = new Teacher("b", "1");
         system.registerUser(teacher);
@@ -308,8 +433,8 @@ public class App {
         // Tạo học sinh và thêm vào hệ thống
         Student student = new Student("a", "1", "S001");
         system.registerUser(student);
-        
-        
+        }
+      */  
        
 
         // Tạo một bài thi
@@ -333,7 +458,7 @@ public class App {
         quiz.addQuestion(question2);
         
        system.addQuiz(quiz);*/
-    }
+    
     
     //
     private void editData(Bank bank) {
@@ -345,6 +470,14 @@ public class App {
         }        
     }
     
+    private void deleteBank(Bank bank) {
+    	Editor editor = new Editor();
+        System.out.print("You want to delete bank? (yes/no): ");
+        if (sc.nextLine().equalsIgnoreCase("yes")) {
+            editor.deleteData(bank);
+            System.out.println("--------");
+        }  
+    }
     
     
     

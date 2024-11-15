@@ -59,4 +59,41 @@ public class BankDataLoader {
         }
         return bank;
     }
+    
+    
+    
+    public static List<User> readFileAndParseUsers(String filePath) {
+        List<User> users = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+
+                // Xử lý từng dòng theo loại người dùng
+                String userType = data[0];
+                switch (userType) {
+	                case "Admin":
+	                    Admin admin= new Admin(data[1], data[2]);
+	                    users.add(admin);
+	                    break;
+                    case "Student":
+                        Student student = new Student(data[1], data[2], data[3], data[4]);
+                        users.add(student);
+                        break;
+                    case "Teacher":
+                        Teacher teacher = new Teacher(data[1], data[2], data[3]);
+                        users.add(teacher);
+                        break;
+                    default:
+                        System.out.println("Unknown user type: " + userType);
+                        break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
 }

@@ -4,8 +4,8 @@ import java.util.List;
 public class Teacher extends User  implements Reviewable {
     private List<Quiz> quizzesCreated;
 
-    public Teacher(String username, String password) {
-        super(username, password, "Teacher");
+    public Teacher(String username, String password, String role) {
+        super(username, password, role);
         this.quizzesCreated = new ArrayList<>();
     }
 
@@ -15,12 +15,13 @@ public class Teacher extends User  implements Reviewable {
         return newQuiz;
     }
 
-    public void editQuiz(Quiz quiz) {
-        // Code to edit quiz
-    }
 
     public void viewResults(Quiz quiz) {
         // Code to view results of students
+    }
+    
+    public void addquizzesCreated(Quiz quiz) {
+    	this.quizzesCreated.add(quiz);
     }
     @Override
     public void reviewInfo() {
@@ -46,5 +47,17 @@ public class Teacher extends User  implements Reviewable {
 
     public void setQuizzesCreated(List<Quiz> quizzesCreated) {
         this.quizzesCreated = quizzesCreated;
+    }
+    
+    public void updateUserAttributes(String username, String password, String role) {
+        if (username != null && !username.isEmpty()) {
+            this.username = username;
+        }
+        if (password != null && !password.isEmpty()) {
+            this.password = password;
+        }
+        if (role != null && !role.isEmpty()) {
+            this.role = role;
+        }
     }
 }

@@ -1,8 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
+
 
 public class Bank {
     private List<Subject> subjects;
@@ -12,7 +15,44 @@ public class Bank {
         this.subjects = subjects != null ? subjects : new ArrayList<>();
         this.date = date;
     }
+    
+    public void writeDataToFile(String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            // Write Bank date
+            writer.write("Bank: " + date);
+            writer.newLine();
 
+            // Iterate through subjects
+            for (Subject subject : subjects) {
+                writer.write("Subject: " + subject.getName());
+                writer.newLine();
+
+                // Iterate through quizzes
+                for (Quiz quiz : subject.getQuizzes()) {
+                    writer.write("  Quiz: " + quiz.getTitle());
+                    writer.newLine();
+                    writer.write("    TimeLimit: " + quiz.getTimeLimit());
+                    writer.newLine();
+
+                    // Iterate through questions
+                    for (Question question : quiz.getQuestions()) {
+                        writer.write("    Question: " + question.getContent());
+                        writer.newLine();
+                        writer.write("      Options: " + String.join(",", question.getOptions()));
+                        writer.newLine();
+                        writer.write("      CorrectAnswer: " + question.getCorrectAnswer());
+                        writer.newLine();
+                        writer.write("      Difficulty: " + question.getDifficulty());
+                        writer.newLine();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+    
     // Getter cho subjects
     public List<Subject> getSubjects() {
         return subjects;

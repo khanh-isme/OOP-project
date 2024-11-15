@@ -1,0 +1,5 @@
+Admin,khanh,1
+Student,b,1,student,mssv
+Teacher,username,2,teacher
+Teacher,a,2,teacher
+Student,a,1,student,1

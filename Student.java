@@ -7,8 +7,8 @@ public class Student extends User implements Reviewable {
     private String mssv;
     private List<Result> quizHistory;// Lưu trữ lịch sử bài thi
 
-    public Student(String username, String password, String mssv) {
-        super(username, password, "Student");
+    public Student(String username, String password, String role, String mssv) {
+        super(username, password, role);
         this.mssv=mssv;
         this.quizzesTaken = new ArrayList<>();
         this.scores = new ArrayList<>();
@@ -109,5 +109,15 @@ public class Student extends User implements Reviewable {
 
     public void setQuizHistory(List<Result> quizHistory) {
         this.quizHistory = quizHistory;
+    }
+    
+    
+    public void updateUserAttributes(String username, String password) {
+        if (username != null && !username.isEmpty()) {
+            this.username = username;
+        }
+        if (password != null && !password.isEmpty()) {
+            this.password = password;
+        }
     }
 }

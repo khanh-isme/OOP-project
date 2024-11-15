@@ -17,3 +17,24 @@ Subject: Science
       Options: 300000km/s,150000km/s,10000km/s
       CorrectAnswer: A
       Difficulty: Hard
+Subject: khanh
+  Quiz: em co iu khanh khong
+    TimeLimit: 10
+    Question: em co iu k
+      Options: yes,no
+      CorrectAnswer: co
+      Difficulty: hard
+Subject: iu khanh
+  Quiz: em iu
+    TimeLimit: 10
+    Question: em co iu khanh khong
+      Options: yes,no
+      CorrectAnswer: co
+      Difficulty: hard
+Subject: a
+  Quiz: b
+    TimeLimit: 10
+    Question: hai
+      Options: yes,no
+      CorrectAnswer: co
+      Difficulty: hard
