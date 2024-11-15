@@ -5,19 +5,23 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Result {
+	private String subjectName;
     private String quizName;
     private int score;
+    private int answeredQuestions;
     private int totalQuestions;
     private String dateTaken;
     private List<Answer> answers;
 
  // Constructor
-    public Result(String quizName, int score, int totalQuestions, String dateTaken, List<Answer> answer) {
-        this.quizName = quizName;
+    public Result( String subjectName,String quizName, int score,int answeredQuestions ,int totalQuestions, String dateTaken, List<Answer> answers) {
+        this.subjectName=  subjectName;
+    	this.quizName = quizName;
         this.score = score;
+        this.answeredQuestions= answeredQuestions;
         this.totalQuestions = totalQuestions;
         this.dateTaken = dateTaken;
-        this.answers = answer;
+        this.answers = answers;
     }
 
  // Hiển thị chi tiết kết quả, bao gồm danh sách câu hỏi
@@ -28,7 +32,12 @@ public class Result {
         System.out.println("Questions and Answers:");
         
         for (Answer answer : answers) {
-            answer.displayQuestionDetails();
+        	if (answer != null) {
+        	    answer.displayQuestionDetails();
+        	} else {
+        	    System.out.println("No answer provided for this question.");
+        	}
+
         }
         
         System.out.println("-------------------------");
@@ -49,5 +58,8 @@ public class Result {
 
     public String getDateTaken() {
         return dateTaken;
+    }
+    public String getSubjectName() {
+    	return this.subjectName;
     }
 }

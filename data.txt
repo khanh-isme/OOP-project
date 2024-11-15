@@ -1,0 +1,19 @@
+Bank: 2023-11-13
+Subject: Math
+  Quiz: b
+    TimeLimit: 10
+    Question: What is 2+2?
+      Options: 1,2,3,4
+      CorrectAnswer: 4
+      Difficulty: Easy
+    Question: Solve x if x+2=5
+      Options: 1,2,3,4
+      CorrectAnswer: 3
+      Difficulty: Medium
+Subject: Science
+  Quiz: Physics Quiz
+    TimeLimit: 45
+    Question: What is the speed of light?
+      Options: 300000km/s,150000km/s,10000km/s
+      CorrectAnswer: A
+      Difficulty: Hard

@@ -1,20 +1,27 @@
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.List;
-import java.util.ArrayList;
+
+
+
+
+// thiếu lớp trừu tượng hàm trừu tượng và interface
 public class Main {
 
     public static void main(String[] args) {
-    	
-        
-       
-        
-        
-        // đa hình ghi đè user teacher và student theo kiểu to_string để khi đăng nhập xong ta in ra 1 số thông tin của người đó 
+        // Đường dẫn đến file chứa dữ liệu
+        String fileName = "C:\\Users\\MSI-PC\\eclipse-workspace\\project-in-school\\bin\\data.txt"; // Đảm bảo rằng file này tồn tại và có dữ liệu đúng định dạng
 
-        // Đăng xuất
-    	App app = new App();
-        app.run();
-        
+        // Tạo Bank từ dữ liệu trong file
+        Bank bank = BankDataLoader.loadBankFromFile(fileName);
+
+        // Kiểm tra nếu bank đã được tải thành công
+        if (bank != null) {
+            System.out.println("Dữ liệu đã được tải thành công từ file:");
+            System.out.println(bank);
+        } else {
+            System.out.println("Không thể tải dữ liệu từ file.");
         }
+
+        // Khởi tạo App và chạy chương trình
+        App app = new App(bank);
+        app.run();
+    }
 }

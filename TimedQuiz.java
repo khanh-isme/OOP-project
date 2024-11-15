@@ -1,12 +1,15 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TimedQuiz extends TimedTest implements Testable {
+public class TimedQuiz extends TimedTest  {
     private Quiz quiz;
-
-    public TimedQuiz(Quiz quiz, int timeLimit) {
+    private Student student;
+    private String subjectname;
+    public TimedQuiz(Quiz quiz, Student student, int timeLimit,String subjectname) {
         super(timeLimit);
         this.quiz = quiz;
+        this.student = student;
+        this.subjectname= subjectname;
     }
     int i = getTimeLimit();
     @Override
@@ -17,13 +20,17 @@ public class TimedQuiz extends TimedTest implements Testable {
         // Logic để quản lý thời gian 
      
             Timer timer = new Timer();
+           
             TimerTask task = new TimerTask() {
                 public void run() {
                     if (i> 0) {
                     	i--;
                     } else {
                         System.out.println("Time's up!");
+                        quiz.stopQuiz();
+                        quiz.finishQuiz(student,subjectname);
                         timer.cancel();
+                        
                     }
                 }
             };
@@ -31,24 +38,11 @@ public class TimedQuiz extends TimedTest implements Testable {
             timer.scheduleAtFixedRate(task, 0, 1000);
             
             //phải hàm start này ở sau cái chạy time mới đúng
-            quiz.startQuiz();
+            quiz.startQuiz(student,subjectname);
+            
+         // Nếu bài thi kết thúc (do hết thời gian hoặc hoàn thành)
+            timer.cancel(); // Đảm bảo hủy bộ đếm nếu quiz tự kết thúc
         }
 
 
-    @Override
-    public void startTest() {
-        startWithTimer();
-    }
-
-    @Override
-    public void endTest() {
-        System.out.println("Quiz has ended.");
-    }
-
-    @Override
-    public void calculateScore() {
-        System.out.println("Calculating score for timed quiz...");
-        // code để tính điểm bài thi có thời gian
-        
-    }
 }

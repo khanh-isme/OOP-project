@@ -6,12 +6,14 @@ import java.util.List;
 public class App {
 
     private Ssystem system; // Hệ thống quản lý người dùng và bài thi
+    private Bank bank;
     private Scanner sc;     // Để đọc đầu vào từ bàn phím
 
-    public App() {
+    public App(Bank bank) {
         system = new Ssystem();
         sc = new Scanner(System.in);
         setupSampleData(); // Thiết lập dữ liệu mẫu ban đầu
+        this.bank=bank;
     }
 
     // Phương thức để khởi chạy ứng dụng
@@ -84,17 +86,19 @@ public class App {
         while (true) {
             System.out.println("Welcome, " + student.getUsername());
             System.out.println("1. Take Quiz");
-            System.out.println("2. View Quiz History");
-            System.out.println("3. View Detailed Quiz History");
-            System.out.println("4. Logout");
+            System.out.println("2. reviewInfo");
+            System.out.println("3. viewExamSchedule");
+            System.out.println("4. View Detailed Quiz History");
+            System.out.println("5. Logout");
             System.out.print("Choose an option: ");
             int option = Integer.parseInt(sc.nextLine());
 
             switch (option) {
                 case 1 -> takeQuiz(student);
-                case 2 -> viewQuizHistory(student);
-                case 3 -> student.viewDetailedQuizHistory();
-                case 4 -> {
+                case 2 -> student.reviewInfo();
+                case 3 -> viewExamSchedule(bank);
+                case 4 -> student.viewDetailedQuizHistory();
+                case 5 -> {
                     system.logoutUser(student);
                     return;
                 }
@@ -109,8 +113,10 @@ public class App {
         while (true) {
             System.out.println("Welcome, " + teacher.getUsername());
             System.out.println("1. Create Quiz");
-            System.out.println("2. Grade Quiz");
-            System.out.println("3. Logout");
+            System.out.println("2. info");
+            System.out.println("3. view");
+            System.out.println("4. editData");
+            System.out.println("5. Logout");
             System.out.print("Choose an option: ");
             int option = Integer.parseInt(sc.nextLine());
 
@@ -119,9 +125,15 @@ public class App {
                     createQuiz(teacher);
                     break;
                 case 2:
-                   // gradeQuiz(teacher);
+                	teacher.reviewInfo();
                     break;
                 case 3:
+                	bank.printAllInfo();
+                	break;
+                case 4:
+                	editData(bank);
+                	break;
+                case 5:
                     return; // Quay lại màn hình đăng nhập
                 default:
                     System.out.println("Invalid option. Try again.");
@@ -131,48 +143,80 @@ public class App {
     
     
     
-    
-  
-    
-    
-    
-    
+   
     
     // Học sinh làm bài thi	
     private void takeQuiz(Student student) {
-        System.out.println("Available quizzes:");
-        for (Quiz quiz : system.getAllQuizzes()) {
+        System.out.println("môn: ");
+        for (Subject subject : bank.getSubjects()) {
+            System.out.println(subject.getName());
+        }
+        System.out.print("Enter the name of the subject you want to take: ");
+        String subjectname = sc.nextLine();
+        
+        // Khởi tạo biến subject1
+        Subject subject1 = null;
+        
+        for (Subject subject : bank.getSubjects()) {
+            if (subject.getName().equals(subjectname)) {
+                subject1 = subject;
+                break; // Thoát vòng lặp sau khi tìm thấy subject
+            }
+        }
+
+        // Kiểm tra nếu không tìm thấy subject
+        if (subject1 == null) {
+            System.out.println("Subject not found.");
+            return;
+        }
+
+        for (Quiz quiz : subject1.getQuizzes()) {
             System.out.println(quiz.getTitle());
         }
 
         System.out.print("Enter the title of the quiz you want to take: ");
         String quizTitle = sc.nextLine();
 
-        Quiz quiz = system.getQuizByTitle(quizTitle);
+        Quiz quiz = subject1.getQuizByTitle(quizTitle);
         if (quiz == null) {
             System.out.println("Quiz not found.");
             return;
         }
+        
+     // Khởi tạo và bắt đầu bài thi có giới hạn thời gian
+        TimedQuiz timedQuiz = new TimedQuiz(quiz, student, quiz.getTimeLimit(),subject1.getName());
        
-        quiz.startQuiz();
+        //quiz.startQuiz(student,subject1.getName());
+        
+        Thread quizThread = new Thread(() -> timedQuiz.startWithTimer());
+        quizThread.start();
+        
+        try {
+            quizThread.join();
+        } catch (InterruptedException e) {
+            System.out.println("Quiz interrupted");
+        }
+
+        // Sau khi quiz kết thúc, chương trình sẽ quay lại menu
+        System.out.println("Returning to menu...");
     }
 
-    // Xem lại câu trả lời của học sinh
-    private void reviewAnswers(Student student) {
-        // Hiển thị các câu hỏi và câu trả lời của học sinh
-        System.out.println("Reviewing answers...");
-        // Logic để review bài làm của học sinh
-    }
+
+    
 
     // Giáo viên tạo bài thi
     private void createQuiz(Teacher teacher) {
+    	System.out.print("Enter subject name: ");
+    	String name =sc.nextLine();
+    	Subject subjectnew= new Subject(name,null);
+    	
         System.out.print("Enter quiz title: ");
         String title = sc.nextLine();
         System.out.print("Enter quiz time limit (in minutes): ");
         int timeLimit = Integer.parseInt(sc.nextLine());
-        Ssystem system1= new Ssystem();
         Quiz quiz = new Quiz(title,timeLimit);
-        system1.addQuiz(quiz); 
+        
+         
 
         while (true) {
             System.out.println("Add a question to the quiz");
@@ -199,6 +243,8 @@ public class App {
                 break;
             }
         }
+        subjectnew.addQuiz(quiz);
+        bank.addSubject(subjectnew);
     }
 
     // Giáo viên chấm bài thi
@@ -220,11 +266,43 @@ public class App {
             System.out.println("Quiz: " + result.getQuizName() + " - Score: " + result.getScore());
         }
     }
+    
+    
+    
+    public void viewExamSchedule(Bank bank) {
+        if (bank == null || bank.getSubjects() == null || bank.getSubjects().isEmpty()) {
+            System.out.println("No exam schedule available.");
+            return;
+        }
+
+        System.out.println("Exam Schedule (Date: " + bank.getDate() + "):");
+
+        for (Subject subject : bank.getSubjects()) {
+            System.out.println("Subject: " + subject.getName());
+
+            if (subject.getQuizzes() == null || subject.getQuizzes().isEmpty()) {
+                System.out.println("  No quizzes available for this subject.");
+                continue;
+            }
+
+            for (Quiz quiz : subject.getQuizzes()) {
+                System.out.println("  Quiz Title: " + quiz.getTitle());
+                System.out.println("    Number of Questions: " + (quiz.getQuestions() != null ? quiz.getQuestions().size() : 0));
+                System.out.println("    Time Limit: " + quiz.getTimeLimit() + " minutes");
+            }
+        }
+    }
+
+    
+    
+    
+    
+    
 
     // Thiết lập dữ liệu mẫu ban đầu cho hệ thống
     private void setupSampleData() {
         // Tạo giáo viên và thêm vào hệ thống
-        Teacher teacher = new Teacher("teacher1", "pass123");
+        Teacher teacher = new Teacher("b", "1");
         system.registerUser(teacher);
 
         // Tạo học sinh và thêm vào hệ thống
@@ -232,12 +310,10 @@ public class App {
         system.registerUser(student);
         
         
-        
-    
-
+       
 
         // Tạo một bài thi
-        Quiz quiz = teacher.createQuiz("A", 10); // 10 phút
+        /*Quiz quiz = teacher.createQuiz("A", 10); // 10 phút
 
         // Thêm câu hỏi vào bài thi
         Question question1 = new Question(
@@ -256,6 +332,20 @@ public class App {
         quiz.addQuestion(question1);
         quiz.addQuestion(question2);
         
-       system.addQuiz(quiz);
+       system.addQuiz(quiz);*/
     }
+    
+    //
+    private void editData(Bank bank) {
+        Editor editor = new Editor();
+        System.out.print("You want to edit bank? (yes/no): ");
+        if (sc.nextLine().equalsIgnoreCase("yes")) {
+            editor.editBank(bank);
+            System.out.println("--------");
+        }        
+    }
+    
+    
+    
+    
 }

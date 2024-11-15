@@ -31,6 +31,9 @@ public class Answer {
         System.out.println("---------------------------------------------------");
     }
     
+    public boolean isCorrect() {
+        return studentAnswer != null && studentAnswer.equals(correctAnswer);
+    }
  // Getters
     public String getQuestionText() { return questionText; }
     public List<String> getChoices() { return choices; }
