@@ -4,9 +4,9 @@ import java.util.List;
 public class Teacher extends User  implements Reviewable {
     private List<Quiz> quizzesCreated;
 
-    public Teacher(String username, String password, String role) {
+    public Teacher(String username, String password, String role,List<Quiz> quizzesCreated) {
         super(username, password, role);
-        this.quizzesCreated = new ArrayList<>();
+        this.quizzesCreated= quizzesCreated!= null ? quizzesCreated  : new ArrayList<>();
     }
 
     public Quiz createQuiz(String title, int timeLimit) {

@@ -34,11 +34,12 @@ public class Admin extends User {
     public void editforStudent(Student student) {
     	Editor editor = new Editor();
     	Scanner sc = new Scanner(System.in);
-    	System.out.print("1 dete Quizes taken");
-    	System.out.print("2 edit MSSV");
-    	System.out.print("3 delete Result");
-    	System.out.print("4 update Student");
-    	System.out.print("5 exit");
+    	System.out.println("1 dete Quizes taken");
+    	System.out.println("2 edit MSSV");
+    	System.out.println("3 delete Result");
+    	System.out.println("4 update Student");
+    	System.out.println("5 exit");
+    	System.out.print("chọn chức năng: ");
     	
     	int option = Integer.parseInt(sc.nextLine());
     	switch(option) {
@@ -64,9 +65,10 @@ public class Admin extends User {
     public void editforTeacher(Teacher teacher) {
     	Editor editor = new Editor();
     	Scanner sc = new Scanner(System.in);
-    	System.out.print("1 dete Quizes created");
-    	System.out.print("2 update Teacher");
-    	System.out.print("3 exit");
+    	System.out.println("1 dete Quizes created");
+    	System.out.println("2 update Teacher");
+    	System.out.println("3 exit");
+    	System.out.print("chọn chức năng: ");
     	
     	int option = Integer.parseInt(sc.nextLine());
     	switch(option) {

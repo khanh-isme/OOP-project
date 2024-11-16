@@ -1,5 +1,16 @@
 Admin,khanh,1
+Student,vankhanh,1,student,mssv
+	Subject Name: Math
+	Quiz Name: a
+	Score: 10.0
+	Date Taken: 20th
 Student,b,1,student,mssv
-Teacher,username,2,teacher
+	Subject Name: physic
+	Quiz Name: b
+	Score: 10.0
+	Date Taken: 20th
+Teacher,nam,2,teacher
+	Quizzes Created: b
 Teacher,a,2,teacher
+	Quizzes Created: a
 Student,a,1,student,1

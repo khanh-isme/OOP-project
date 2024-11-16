@@ -71,13 +71,13 @@ public class App {
         int choice = Integer.parseInt(sc.nextLine());
 
         if (choice == 1) {
-            Teacher teacher = new Teacher(username, password,"teacher");
+            Teacher teacher = new Teacher(username, password,"teacher",null);
             system.registerUser(teacher);
             System.out.println("Teacher account registered successfully.");
         } else if (choice == 2) {
             System.out.print("Enter Student ID: ");
             String studentId = sc.nextLine();
-            Student student = new Student(username, password, "student",studentId);
+            Student student = new Student(username, password, "student",studentId,null);
             system.registerUser(student);
             System.out.println("Student account registered successfully.");
         } else {
@@ -87,46 +87,63 @@ public class App {
  // Menu cho học sinh
     private void runStudentMenu(Student student) {
         while (true) {
-            System.out.println("Welcome, " + student.getUsername());
+            System.out.println("\n Welcome, " + student.getUsername());
             System.out.println("\n=== Student Menu ===");
             System.out.println("1. Take Quiz");
-            System.out.println("2. reviewInfo");
+            System.out.println("2. reviewInfo");// xem thành tích đầy đủ luôn r
             System.out.println("3. view ExamSchedule");
             System.out.println("4. View Detailed Quiz History");
-            System.out.println("5. Logout");
+            System.out.println("5. edit account");
+            System.out.println("6. Logout");
             System.out.print("Choose an option: ");
             int option = Integer.parseInt(sc.nextLine());
+            Editor editor = new Editor();
 
             switch (option) {
-                case 1 -> takeQuiz(student);
-                case 2 -> student.reviewInfo();
-                case 3 -> viewExamSchedule(bank);
-                case 4 -> student.viewDetailedQuizHistory();
-                case 5 -> {
+                case 1 :
+                	takeQuiz(student);
+                	system.writeUsersToFile2("data1.txt",system.getUsers());//auto save
+                	break;
+                case 2 :
+                	student.reviewInfo();
+                	break;
+                case 3 : 
+                	viewExamSchedule(bank);
+                	break;
+                case 4 : 
+                	student.viewDetailedQuizHistory();
+                	break;
+                case 5 : 
+                	editor.updateStudent(student);
+                	break;
+                case 6 : {
                     system.logoutUser(student);
                     return;
                 }
-                default -> System.out.println("Invalid option. Try again.");
+                default : System.out.println("Invalid option. Try again.");
             }
         }
     }
-
+    
+    
+   
 
     // Menu cho giáo viên
     private void runTeacherMenu(Teacher teacher) {
         while (true) {
-            System.out.println("Welcome, " + teacher.getUsername());
+            System.out.println("\n Welcome, " + teacher.getUsername());
             System.out.println("\n=== Teacher Menu ===");
             System.out.println("1. Create Quiz");
             System.out.println("2. infomation");
             System.out.println("3. view Bank");
             System.out.println("4. edit Bank");
             System.out.println("5. delete Bank");
-            System.out.println("6. saveData");
-            System.out.println("7. Logout");
+            System.out.println("6. edit account");
+            System.out.println("7. saveData");
+            System.out.println("8. Logout");
             System.out.print("Choose an option: ");
             int option = Integer.parseInt(sc.nextLine());
-
+            Editor editor = new Editor();
             switch (option) {
                 case 1:
                     createQuiz(teacher);
@@ -142,11 +159,14 @@ public class App {
                 	break;
                 case 5:
                 	deleteBank(bank);
-                	break;
+                	break;                
                 case 6:
-                	bank.writeDataToFile("data.txt");
-                    break; 
+                	editor.updateTeacher(teacher);
+                	break;
                 case 7:
+                	bank.writeDataToFile("data.txt");
+                    break;
+                case 8:
                 	return;
                 default:
                     System.out.println("Invalid option. Try again.");
@@ -185,10 +205,10 @@ public class App {
                     String mssv = sc.nextLine();
                     System.out.print("Nhập role: ");
                     String role = sc.nextLine();
-                    Student student = new Student(username, password, role, mssv);
+                    Student student = new Student(username, password, role, mssv,null);
                     admin.addUser(student);
                 } else if (userType == 2) {
-                    Teacher teacher = new Teacher(username, password, username);
+                    Teacher teacher = new Teacher(username, password, username,null);
                     admin.addUser(teacher);
                 } else {
                     System.out.println("Loại người dùng không hợp lệ.");
@@ -259,7 +279,7 @@ public class App {
                 break;
             
             case 6:
-            	system.writeUsersToFile(system.getUsers(), "data1.txt");
+            	system.writeUsersToFile2("data1.txt",system.getUsers());
             case 7: // Thoát
                 System.out.println("Thoát chương trình.");
                 return;
@@ -424,43 +444,7 @@ public class App {
     
     
 
-    // Thiết lập dữ liệu mẫu ban đầu cho hệ thống
-    /*private void setupSampleData() {
-        // Tạo giáo viên và thêm vào hệ thống
-        Teacher teacher = new Teacher("b", "1");
-        system.registerUser(teacher);
-
-        // Tạo học sinh và thêm vào hệ thống
-        Student student = new Student("a", "1", "S001");
-        system.registerUser(student);
-        }
-      */  
-       
-
-        // Tạo một bài thi
-        /*Quiz quiz = teacher.createQuiz("A", 10); // 10 phút
-
-        // Thêm câu hỏi vào bài thi
-        Question question1 = new Question(
-                "What is the size of int in Java?",
-                Arrays.asList("4 bytes", "8 bytes", "16 bytes", "32 bytes"),
-                "A",
-                "Easy"
-        );
-        Question question2 = new Question(
-                "What keyword is used to define a class in Java?",
-                Arrays.asList("struct", "class", "define", "void"),
-                "B",
-                "Easy"
-        );
-
-        quiz.addQuestion(question1);
-        quiz.addQuestion(question2);
-        
-       system.addQuiz(quiz);*/
     
-    
-    //
     private void editData(Bank bank) {
         Editor editor = new Editor();
         System.out.print("You want to edit bank? (yes/no): ");

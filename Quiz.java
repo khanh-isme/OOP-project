@@ -137,8 +137,8 @@ public class Quiz {
             answers.add(null);
         }
 
-        int score = calculateScore(answers);
-        System.out.println("Quiz completed! Your score: " + score + "/" + questions.size());
+        float score = calculateScore(answers);
+        System.out.println("Quiz completed! Your score: " + score );
 
         // Lưu lại kết quả cho student
         student.addResult(new Result(subject,title, score, answeredQuestions, totalQuestions, "20th", answers));
@@ -153,18 +153,16 @@ public class Quiz {
     }
 
     // tính điểm 
-    private int calculateScore(List<Answer> answers) {
+    private float calculateScore(List<Answer> answers) {
         int score = 0;
         for (Answer answer : answers) {
             if (answer != null && answer.isCorrect()) {
                 score++;
             }
         }
-        return score;
+        return score/this.questions.size();
     }
 
-    
-    
     
     // Getters and Setters
     public void setTitle(String title) {

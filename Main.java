@@ -34,9 +34,6 @@ public class Main {
             System.out.println("Không thể tải dữ liệu từ file.");
         }
         
-
-        
-        
         
         
         // Khởi tạo App và chạy chương trình

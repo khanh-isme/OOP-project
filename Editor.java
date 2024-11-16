@@ -283,13 +283,13 @@ public class Editor {
 	
 	 public void deleteQuiz(Student student) {
 	        System.out.println("Select a quiz to delete from student's quizzes taken:");
-	        for (int i = 0; i < student.getQuizzesTaken().size(); i++) {
-	            System.out.println((i + 1) + ". " + student.getQuizzesTaken().get(i).getTitle());
+	        for (int i = 0; i < student.getQuizHistory().size(); i++) {
+	            System.out.println((i + 1) + ". " + student.getQuizHistory().get(i).getQuizName());
 	        }
 	        int choice = scanner.nextInt() - 1;
 	        scanner.nextLine(); // Read newline
-	        if (choice >= 0 && choice < student.getQuizzesTaken().size()) {
-	            student.getQuizzesTaken().remove(choice);
+	        if (choice >= 0 && choice < student.getQuizHistory().size()) {
+	            student.getQuizHistory().remove(choice);
 	            System.out.println("Quiz removed from student's quizzes taken.");
 	        } else {
 	            System.out.println("Invalid index.");

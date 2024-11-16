@@ -7,14 +7,14 @@ import java.util.List;
 public class Result {
 	private String subjectName;
     private String quizName;
-    private int score;
+    private	float score;
     private int answeredQuestions;
     private int totalQuestions;
     private String dateTaken;
     private List<Answer> answers;
 
  // Constructor
-    public Result( String subjectName,String quizName, int score,int answeredQuestions ,int totalQuestions, String dateTaken, List<Answer> answers) {
+    public Result( String subjectName,String quizName, float score,int answeredQuestions ,int totalQuestions, String dateTaken, List<Answer> answers) {
         this.subjectName=  subjectName;
     	this.quizName = quizName;
         this.score = score;
@@ -48,8 +48,11 @@ public class Result {
         return quizName;
     }
 
-    public int getScore() {
+    public float getScore() {
         return score;
+    }
+    public int getansweredQuestion() {
+        return answeredQuestions;
     }
 
     public int getTotalQuestions() {

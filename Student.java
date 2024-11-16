@@ -2,42 +2,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Student extends User implements Reviewable {
-    private List<Quiz> quizzesTaken;
-    private List<Integer> scores;// coi lại phần điểm này hình như k cần thiết
+   
+    
     private String mssv;
     private List<Result> quizHistory;// Lưu trữ lịch sử bài thi
 
-    public Student(String username, String password, String role, String mssv) {
+    public Student(String username, String password, String role, String mssv,List<Result> quizHistory) {
         super(username, password, role);
-        this.mssv=mssv;
-        this.quizzesTaken = new ArrayList<>();
-        this.scores = new ArrayList<>();
-        this.quizHistory= new ArrayList();
+        this.mssv=mssv;  
+        this.quizHistory= quizHistory!= null ? quizHistory  : new ArrayList<>();
     }
     
-    // cần xem xét lại hình như bị trùng chức năng 
-    /*public void takeQuiz(Quiz quiz, List<String> answers) {
-        int score = quiz.calculateScore(answers);
-        quizzesTaken.add(quiz);
-        scores.add(score);
-    }*/
-
-    public int viewScore(Quiz quiz) {
-        int index = quizzesTaken.indexOf(quiz);
-        if (index != -1) {
-            return scores.get(index);
-        }
-        return -1; // Quiz not found
-    }
     
     // Thêm kết quả mới vào lịch sử làm bài
     public void addResult(Result result) {
         quizHistory.add(result);
     }
     
-    public List<Result> getQuizHistory() {
-        return quizHistory;
-    }
     
     
  // Hiển thị lịch sử làm bài chi tiết, bao gồm các câu hỏi đã chọn
@@ -82,21 +63,10 @@ public class Student extends User implements Reviewable {
 	}	
 	
 	 // Getters and setters (optional)
-    public List<Quiz> getQuizzesTaken() {
-        return quizzesTaken;
+	public List<Result> getQuizHistory() {
+        return quizHistory;
     }
-
-    public void setQuizzesTaken(List<Quiz> quizzesTaken) {
-        this.quizzesTaken = quizzesTaken;
-    }
-
-    public List<Integer> getScores() {
-        return scores;
-    }
-
-    public void setScores(List<Integer> scores) {
-        this.scores = scores;
-    }
+    
 
     public String getMssv() {
         return mssv;
@@ -110,7 +80,7 @@ public class Student extends User implements Reviewable {
     public void setQuizHistory(List<Result> quizHistory) {
         this.quizHistory = quizHistory;
     }
-    
+       
     
     public void updateUserAttributes(String username, String password) {
         if (username != null && !username.isEmpty()) {

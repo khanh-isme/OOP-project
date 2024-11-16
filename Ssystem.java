@@ -7,6 +7,10 @@ import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
 public class Ssystem {
     private List<User> users;
@@ -19,7 +23,7 @@ public class Ssystem {
 
  // Phương thức đăng ký người dùng mới (học sinh hoặc giáo viên)
     public void registerUser(User user) {
-        users.add(user);
+        this.users.add(user);
         System.out.println("User " + user.getUsername() + " registered successfully.");
     }
 
@@ -65,7 +69,43 @@ public class Ssystem {
     
     
     
+    public static void writeUsersToFile2(String filePath, List<User> users) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            for (User user : users) {
+                if (user instanceof Admin) {
+                    Admin admin = (Admin) user;
+                    bw.write(formatAdmin(admin)+ "\n");
+                } else if (user instanceof Student) {
+                    Student student = (Student) user;
+                    bw.write(formatStudent(student) + "\n");
+                    
+                    // Ghi lịch sử bài thi
+                    for (Result result : student.getQuizHistory()) {
+                        bw.write(String.format("\tSubject Name: %s\n", result.getSubjectName()));
+                        bw.write(String.format("\tQuiz Name: %s\n", result.getQuizName()));
+                        bw.write(String.format("\tScore: %.1f\n", (double) result.getScore()));
+                        bw.write(String.format("\tDate Taken: %s\n", result.getDateTaken()));
+                    }
+                } else if (user instanceof Teacher) {
+                    Teacher teacher = (Teacher) user;
+                    bw.write(formatTeacher(teacher) + "\n");
+                    
+                    // Ghi danh sách bài kiểm tra được tạo
+                    for (Quiz quiz : teacher.getQuizzesCreated()) {
+                        bw.write(String.format("\tQuizzes Created: %s\n", quiz.getTitle()));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
+    
+    
+    
+    
+    //khuc nay dang thu nghiem
     public static void writeUsersToFile(List<User> users, String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
             for (User user : users) {
@@ -90,14 +130,14 @@ public class Ssystem {
 
     // Định dạng chuỗi cho Student
     private static String formatStudent(Student student) {
-        return "Student," + student.getUsername() + "," + student.getPassword() + 
-               ",student," + student.getMssv();
+        return "Student," + student.getUsername() + "," + student.getPassword() +  ","+
+               student.getRole()+ "," + student.getMssv();
     }
 
     // Định dạng chuỗi cho Teacher
     private static String formatTeacher(Teacher teacher) {
-        return "Teacher," + teacher.getUsername() + "," + teacher.getPassword() + 
-               ",teacher";
+        return "Teacher," + teacher.getUsername() + "," + teacher.getPassword() +  ","+
+        		teacher.getRole();
     }
     
 }
