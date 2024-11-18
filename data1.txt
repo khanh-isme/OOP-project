@@ -1,16 +1,37 @@
 Admin,khanh,1
-Student,vankhanh,1,student,mssv
+Student,khanhdeptrai,1,student1,mssv
+registered Subjects: Math,physic
 	Subject Name: Math
 	Quiz Name: a
 	Score: 10.0
-	Date Taken: 20th
-Student,b,1,student,mssv
-	Subject Name: physic
+	Date Taken: 2024-11-17 10:06
+	Subject Name: Math
 	Quiz Name: b
+	Score: 0.0
+	Date Taken: 2024-11-18 11:44
+	Subject Name: Math
+	Quiz Name: c
 	Score: 10.0
-	Date Taken: 20th
-Teacher,nam,2,teacher
+	Date Taken: 2024-11-18 11:54
+	Subject Name: Math
+	Quiz Name: a
+	Score: 10.0
+	Date Taken: 2024-11-18 12:04
+	Subject Name: Math
+	Quiz Name: b
+	Score: 5.0
+	Date Taken: 2024-11-18 15:30
+Student,ab,1,student,mssv
+registered Subjects: Math,physic
+Teacher,nam,2,teachertoan
 	Quizzes Created: b
-Teacher,a,2,teacher
-	Quizzes Created: a
-Student,a,1,student,1
+Teacher,thay toan,2,teacher toan
+	Quizzes Created: a,b
+Student,a,1,student2,1s
+registered Subjects: dia ly
+	Subject Name: dia ly
+	Quiz Name: dia ly viet nam
+	Score: 0.0
+	Date Taken: 2024-11-18 18:24
+Student,khanh,3,nam nhat,s11
+registered Subjects: 

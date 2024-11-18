@@ -65,4 +65,18 @@ public class Result {
     public String getSubjectName() {
     	return this.subjectName;
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder resultBuilder = new StringBuilder();
+        resultBuilder.append("Result Details:\n");
+        resultBuilder.append("Subject Name: ").append(subjectName).append("\n");
+        resultBuilder.append("Quiz Name: ").append(quizName).append("\n");
+        resultBuilder.append("Score: ").append(score).append(" / ").append(totalQuestions).append("\n");
+        resultBuilder.append("Answered Questions: ").append(answeredQuestions).append(" / ").append(totalQuestions).append("\n");
+        resultBuilder.append("Date Taken: ").append(dateTaken).append("\n");
+        
+        return resultBuilder.toString();
+    }
+
 }

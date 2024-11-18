@@ -1,16 +1,20 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Student extends User implements Reviewable {
    
     
     private String mssv;
     private List<Result> quizHistory;// Lưu trữ lịch sử bài thi
+    private List<Subject> registeredSubjects;
 
-    public Student(String username, String password, String role, String mssv,List<Result> quizHistory) {
+    public Student(String username, String password, String role, String mssv,List<Result> quizHistory,List<Subject> registeredSubjects) {
         super(username, password, role);
         this.mssv=mssv;  
         this.quizHistory= quizHistory!= null ? quizHistory  : new ArrayList<>();
+        this.registeredSubjects= registeredSubjects!= null ? registeredSubjects  : new ArrayList<>();
     }
     
     
@@ -53,18 +57,42 @@ public class Student extends User implements Reviewable {
                 System.out.println("-----------------------------");
             }
         }
+        if(registeredSubjects.isEmpty()) {
+        	System.out.println("No registered Subjects available.");
+        } else {
+        	System.out.println("registered Subjects:");
+        	for(Subject subject:registeredSubjects) {
+        		System.out.print(subject.getName()+","+ " ");
+        	}
+        }
+    }
+    
+    public static String getCurrentTimeAsString() {
+        // Lấy thời gian hiện tại
+        LocalDateTime now = LocalDateTime.now();
+
+        // Định dạng thời gian theo kiểu mong muốn
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        // Chuyển đổi thời gian thành chuỗi
+        return now.format(formatter);
     }
 
+    	
 	
 
-	public void addFeedback(Quiz quiz, String teacherFeedback) {
-		// TODO Auto-generated method stub
 		
-	}	
 	
 	 // Getters and setters (optional)
+    public List<Subject> getRegisteredSubjects() {
+        return this.registeredSubjects;
+    }
+    
+    public void setRegisteredSubjects(List<Subject> registeredSubjects) {
+    	this.registeredSubjects=registeredSubjects;
+    }
 	public List<Result> getQuizHistory() {
-        return quizHistory;
+        return this.quizHistory;
     }
     
 

@@ -8,66 +8,73 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BankDataLoader {
-    public static Bank loadBankFromFile(String fileName) {
-        Bank bank = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            Subject currentSubject = null;
-            Quiz currentQuiz = null;
+	public static Bank loadBankFromFile(String fileName) {
+	    Bank bank = null;
+	    try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+	        String line;
+	        Subject currentSubject = null;
+	        Quiz currentQuiz = null;
 
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (line.startsWith("Bank:")) {
-                    String date = line.split(":")[1].trim();
-                    
-                    bank = new Bank(null,date);
-                } 
-                	else if (line.startsWith("Subject:")) {
-                    String subjectName = line.split(":")[1].trim();
-                    currentSubject = new Subject(subjectName,null);
-                    
-                    if (bank != null) bank.addSubject(currentSubject);
-                }
-                	else if (line.startsWith("Quiz:")) {
-                    String quizTitle = line.split(":")[1].trim();
-                    currentQuiz = new Quiz(quizTitle, 0); // Time limit will be set later
-                    
-                    if (currentSubject != null) currentSubject.addQuiz(currentQuiz);
-                } 
-                	else if (line.startsWith("TimeLimit:")) {
-                    int timeLimit = Integer.parseInt(line.split(":")[1].trim());
-                    
-                    if (currentQuiz != null) currentQuiz.setTimeLimit(timeLimit);
-                } 
-                	else if (line.startsWith("Question:")) {
-                    String questionContent = line.split(":")[1].trim();
-                    List<String> options = new ArrayList<>();
-                    String correctAnswer = "";
-                    String difficulty = "";
+	        while ((line = reader.readLine()) != null) {
+	            line = line.trim();
 
-                    // Continue reading options, answer, and difficulty
-                    while ((line = reader.readLine()) != null && !line.startsWith("Question:")) {
-                        line = line.trim();
-                        if (line.startsWith("Options:")) {
-                            options = Arrays.asList(line.split(":")[1].trim().split(","));
-                        } 
-                        	else if (line.startsWith("CorrectAnswer:")) {
-                            correctAnswer = line.split(":")[1].trim();
-                        } 
-                        	else if (line.startsWith("Difficulty:")) {
-                            difficulty = line.split(":")[1].trim();
-                            break; // End of this question data
-                        }
-                    }
-                    Question question = new Question(questionContent, options, correctAnswer, difficulty);
-                    if (currentQuiz != null) currentQuiz.addQuestion(question);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bank;
-    }
+	            if (line.startsWith("Bank:")) {
+	                String date = line.split(":")[1].trim();
+	                bank = new Bank(null, date);
+
+	            } else if (line.startsWith("Subject:")) {
+	                String[] parts = line.substring(8).trim().split(",");
+	                if (parts.length == 3) {
+	                    String subjectName = parts[0].trim();
+	                    String subjectDay = parts[1].trim();
+	                    int time = Integer.parseInt(parts[2].trim());
+	                    currentSubject = new Subject(subjectName, null, subjectDay, time);
+	                } else {
+	                    System.out.println("Lỗi: Dữ liệu Subject không đúng định dạng.");
+	                    continue;
+	                }
+
+	                if (bank != null) bank.addSubject(currentSubject);
+
+	            } else if (line.startsWith("Quiz:")) {
+	                String quizTitle = line.split(":")[1].trim();
+	                currentQuiz = new Quiz(quizTitle, 0);
+	                if (currentSubject != null) currentSubject.addQuiz(currentQuiz);
+
+	            } else if (line.startsWith("TimeLimit:")) {
+	                int timeLimit = Integer.parseInt(line.split(":")[1].trim());
+	                if (currentQuiz != null) currentQuiz.setTimeLimit(timeLimit);
+
+	            } else if (line.startsWith("Question:")) {
+	                String questionContent = line.split(":")[1].trim();
+	                List<String> options = new ArrayList<>();
+	                String correctAnswer = "";
+	                String difficulty = "";
+
+	                // Đọc tiếp để lấy các thông tin khác của câu hỏi
+	                while ((line = reader.readLine()) != null) {
+	                    line = line.trim();
+
+	                    if (line.startsWith("Options:")) {
+	                        options = Arrays.asList(line.split(":")[1].trim().split(","));
+	                    } else if (line.startsWith("CorrectAnswer:")) {
+	                        correctAnswer = line.split(":")[1].trim();
+	                    } else if (line.startsWith("Difficulty:")) {
+	                        difficulty = line.split(":")[1].trim();
+	                        break; // Kết thúc thông tin câu hỏi
+	                    }
+	                }
+
+	                Question question = new Question(questionContent, options, correctAnswer, difficulty);
+	                if (currentQuiz != null) currentQuiz.addQuestion(question);
+	            }
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    return bank;
+	}
+
     
     
     
@@ -81,7 +88,7 @@ public class BankDataLoader {
             while ((line = br.readLine()) != null) {
                 line = line.trim();
 
-                // Nếu dòng chính (bắt đầu bằng Admin, Student, Teacher)
+                // Kiểm tra dòng chính (Admin, Student, Teacher)
                 if (line.startsWith("Admin") || line.startsWith("Student") || line.startsWith("Teacher")) {
                     String[] data = line.split(",");
                     String userType = data[0];
@@ -104,7 +111,8 @@ public class BankDataLoader {
                                 String role = data[3];
                                 String mssv = data[4];
                                 List<Result> quizHistory = new ArrayList<>();
-                                Student student = new Student(username, password, role, mssv, quizHistory);
+                                List<Subject> registeredSubjects = new ArrayList<>();
+                                Student student = new Student(username, password, role, mssv, quizHistory, registeredSubjects);
                                 users.add(student);
                                 currentUser = student;
                             } else {
@@ -131,10 +139,22 @@ public class BankDataLoader {
                             break;
                     }
                 }
-                // Nếu dòng phụ (liên quan đến Student hoặc Teacher)
+                // Kiểm tra dòng phụ (registered Subjects)
+                else if (line.startsWith("registered Subjects:") && currentUser instanceof Student) {
+                    String subjectsStr = line.substring("registered Subjects:".length()).trim();
+                    String[] subjects = subjectsStr.split(",");
+                    List<Subject> registeredSubjects = new ArrayList<>();
+                    for (String subjectName : subjects) {
+                        if (!subjectName.isEmpty()) {
+                            Subject subject = new Subject(subjectName.trim(), new ArrayList<>(), "", 0);
+                            registeredSubjects.add(subject);
+                        }
+                    }
+                    ((Student) currentUser).setRegisteredSubjects(registeredSubjects);
+                }
+                // Đọc lịch sử bài thi
                 else if (line.startsWith("Subject Name:") && currentUser instanceof Student) {
                     String subjectName = line.substring("Subject Name:".length()).trim();
-
                     String quizName = br.readLine().trim().substring("Quiz Name:".length()).trim();
                     String scoreStr = br.readLine().trim().substring("Score:".length()).trim();
                     double score = Double.parseDouble(scoreStr);
@@ -142,7 +162,9 @@ public class BankDataLoader {
 
                     Result result = new Result(subjectName, quizName, (int) score, 0, 0, dateTaken, new ArrayList<>());
                     ((Student) currentUser).getQuizHistory().add(result);
-                } else if (line.startsWith("Quizzes Created:") && currentUser instanceof Teacher) {
+                }
+                // Đọc các bài kiểm tra đã tạo cho Teacher
+                else if (line.startsWith("Quizzes Created:") && currentUser instanceof Teacher) {
                     String quizName = line.substring("Quizzes Created:".length()).trim();
                     Quiz quiz = new Quiz(quizName, null); // Giả sử không có thông tin giới hạn thời gian
                     ((Teacher) currentUser).getQuizzesCreated().add(quiz);
@@ -154,4 +176,7 @@ public class BankDataLoader {
 
         return users;
     }
+    
+    
+    
 }

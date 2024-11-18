@@ -5,25 +5,42 @@ import java.util.List;
 public class Subject {
     private String name;
     private List<Quiz> quizzes;
+    private String ngaythi;
+    private int time;// thời gian mở đề 
 
-    public Subject(String name, List<Quiz> quizzes) {
+    public Subject(String name, List<Quiz> quizzes,String ngaythi, int time) {
         this.name = name;
         this.quizzes = quizzes != null ? quizzes : new ArrayList<>();
+        this.ngaythi= ngaythi;
+        this.time=time;
     }
 
     // Getter cho name
     public String getName() {
-        return name;
+        return this.name;
     }
 
     // Setter cho name
     public void setName(String name) {
         this.name = name;
     }
+   public  String getNgayThi() {
+	   return this.ngaythi;
+   }
+   public  void setNgayThi(String ngaythi) {
+	    this.ngaythi=ngaythi;
+   }
 
+   public int getTime() {
+	   return this.time;
+   }
+   public void setTime(int time) {
+	   this.time=time;
+   }
+   
     // Getter cho quizzes
     public List<Quiz> getQuizzes() {
-        return quizzes;
+        return this.quizzes;
     }
 
     // Setter cho quizzes

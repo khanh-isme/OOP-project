@@ -31,7 +31,7 @@ public class Admin extends User {
     	}
     }
     
-    public void editforStudent(Student student) {
+    public void editforStudent(Student student,Ssystem system) {
     	Editor editor = new Editor();
     	Scanner sc = new Scanner(System.in);
     	System.out.println("1 dete Quizes taken");
@@ -53,7 +53,7 @@ public class Admin extends User {
     			editor.deleteResult(student);
     			break;
     		case 4:
-    			editor.updateStudent(student);
+    			editor.updateStudent(student,system);
     			break;
     		case 5:
     			return;
@@ -62,10 +62,10 @@ public class Admin extends User {
     	}
     }
     
-    public void editforTeacher(Teacher teacher) {
+    public void editforTeacher(Teacher teacher,Ssystem system) {
     	Editor editor = new Editor();
     	Scanner sc = new Scanner(System.in);
-    	System.out.println("1 dete Quizes created");
+    	System.out.println("1 delete Quizes created");
     	System.out.println("2 update Teacher");
     	System.out.println("3 exit");
     	System.out.print("chọn chức năng: ");
@@ -76,7 +76,7 @@ public class Admin extends User {
     			editor.deleteQuiz(teacher);
     			break;
     		case 2:
-    			editor.updateTeacher(teacher);
+    			editor.updateTeacher(teacher,system);
     			break;
     		case 3:
     			return;

@@ -18,23 +18,23 @@ public class Bank {
     
     public void writeDataToFile(String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            // Write Bank date
+            // Ghi thông tin Bank
             writer.write("Bank: " + date);
             writer.newLine();
 
-            // Iterate through subjects
+            // Lặp qua các Subject
             for (Subject subject : subjects) {
-                writer.write("Subject: " + subject.getName());
+                writer.write("Subject: " + subject.getName() + ", " + subject.getNgayThi() + ", " + subject.getTime());
                 writer.newLine();
 
-                // Iterate through quizzes
+                // Lặp qua các Quiz
                 for (Quiz quiz : subject.getQuizzes()) {
                     writer.write("  Quiz: " + quiz.getTitle());
                     writer.newLine();
                     writer.write("    TimeLimit: " + quiz.getTimeLimit());
                     writer.newLine();
 
-                    // Iterate through questions
+                    // Lặp qua các Question
                     for (Question question : quiz.getQuestions()) {
                         writer.write("    Question: " + question.getContent());
                         writer.newLine();
@@ -50,6 +50,16 @@ public class Bank {
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
+    }
+
+
+    public Subject findSubjectByName(String name) {
+        for (Subject subject : subjects) { // 'subjects' represents the list or collection of available subjects in 'bank'
+            if (subject.getName().equalsIgnoreCase(name)) {
+                return subject;
+            }
+        }
+        return null; // Return null if the subject is not found
     }
 
     
