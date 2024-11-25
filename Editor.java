@@ -330,6 +330,7 @@ public class Editor {
 	        for (int i = 0; i < student.getQuizHistory().size(); i++) {
 	            System.out.println((i + 1) + ". " + student.getQuizHistory().get(i).toString()); // Customize toString() as needed
 	        }
+	        System.out.print("your choice: ");
 	        int choice = scanner.nextInt() - 1;
 	        if(choice < 0) {
 	        	return;
@@ -343,6 +344,25 @@ public class Editor {
 	        }
 	    }
 	 
+	 public void deleteRegisteredSubjects( Student student) {
+		 System.out.println("Select a subject to delete from student's registered Subjects(choose 0 to exit):");
+	        for (int i = 0; i < student.getRegisteredSubjects().size(); i++) {
+	            System.out.println((i + 1) + ". " + student.getRegisteredSubjects().get(i).getName()); // Customize toString() as needed
+	        }
+	        System.out.print("your choice: ");
+	        int choice = scanner.nextInt() - 1;
+	        if(choice < 0) {
+	        	return;
+	        }
+	        scanner.nextLine(); // Read newline
+	        if (choice >= 0 && choice < student.getRegisteredSubjects().size()) {
+	            student.getRegisteredSubjects().remove(choice);
+	            System.out.println("Result removed from student's quiz history.");
+	        } else {
+	            System.out.println("Invalid index.");
+	        }
+		 
+	 }
 	 
 	 
 	 public void updateTeacher(Teacher teacher,Ssystem system) {

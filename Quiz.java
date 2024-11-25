@@ -62,7 +62,6 @@ public class Quiz {
     	    return;
     	}
 
-    	
     	Scanner scanner = new Scanner(System.in);  
         System.out.println("Quiz: " + title);
         System.out.println("Starting the quiz...");

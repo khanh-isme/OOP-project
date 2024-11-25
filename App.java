@@ -33,13 +33,18 @@ public class App {
             int choice = Integer.parseInt(sc.nextLine());
 
             switch (choice) {
-                case 1 -> login();
-                case 2 -> register();
-                case 3 -> {
+                case 1 :
+                	login();
+                	break;
+                case 2 :
+                	register();
+                	system.writeUsersToFile3(system.getUsers(),"data1.txt");//auto save
+                	break;
+                case 3 : {
                     System.out.println("Exiting the system.");
                     return;
                 }
-                default -> System.out.println("Invalid option. Try again.");
+                default : System.out.println("Invalid option. Try again.");
             }
         }
     }
@@ -250,8 +255,11 @@ public class App {
             	for (User user : system.getUsers()) {
             		System.out.println(user.getUsername());
             	}
-                System.out.print("Nhập username người dùng cần xóa: ");
+                System.out.print("Nhập username người dùng cần xóa (type s to exit): ");
                 String usernameToRemove = sc.nextLine();
+                if(usernameToRemove.equalsIgnoreCase("s")) {
+                	break;
+                }
                 User userToRemove = null;
 
                 for (User user : system.getUsers()) {
@@ -447,11 +455,16 @@ public class App {
 
     // Giáo viên tạo bài thi
     private void createQuiz(Teacher teacher) {
-        System.out.println("Do you want to create a quiz for an existing subject or a new subject? (Enter 'existing' or 'new'):");
+        System.out.println("Do you want to create a quiz for an existing subject or a new subject? :");
+        System.out.println("1-existing");
+        System.out.println("2-new");
         String choice = sc.nextLine();
         Subject subject;
        
-        if (choice.equalsIgnoreCase("existing")) {
+        if (choice.equalsIgnoreCase("1")) {
+        	for( Subject demo : bank.getSubjects()) {
+        		System.out.println(" - " + demo.getName());
+        	}
             System.out.println("Enter the name of the existing subject:");
             String subjectName = sc.nextLine();
             subject = bank.findSubjectByName(subjectName);
@@ -460,10 +473,16 @@ public class App {
                 System.out.println("Subject not found. Please try again or create a new subject.");
                 return;
             }
-        } else if (choice.equalsIgnoreCase("new")) {
+        } else if (choice.equalsIgnoreCase("2")) {
             System.out.print("Enter new subject name: ");
             String name = sc.nextLine();
-            System.out.print("Enter exam day: ");
+            for(Subject demo : bank.getSubjects()) {
+            	if(name.equals(demo.getName())) {
+            		System.out.print("Subject existed");
+            		return;
+            	}
+            }
+            System.out.print("Enter exam day (yyyy-MM-dd HH:mm): ");
             String day = sc.nextLine();
             System.out.print("Enter time the exam opens: ");
             String time = sc.nextLine();
@@ -477,6 +496,15 @@ public class App {
 
         System.out.print("Enter quiz title: ");
         String title = sc.nextLine();
+        if(subject.getQuizzes() != null) {
+	        for(Quiz demo : subject.getQuizzes()) {
+	        	if(title.equals(demo.getTitle())) {
+	        		System.out.print("Quiz title existed");
+	        		return;
+	        	}
+	        }
+        }
+        
         System.out.print("Enter quiz time limit (in minutes): ");
         int timeLimit = Integer.parseInt(sc.nextLine());
         Quiz quiz = new Quiz(title, timeLimit);

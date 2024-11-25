@@ -37,8 +37,9 @@ public class Admin extends User {
     	System.out.println("1 dete Quizes taken");
     	System.out.println("2 edit MSSV");
     	System.out.println("3 delete Result");
-    	System.out.println("4 update Student");
-    	System.out.println("5 exit");
+    	System.out.println("4 delete Registered Subjects");
+    	System.out.println("5 update Student");
+    	System.out.println("6 exit");
     	System.out.print("chọn chức năng: ");
     	
     	int option = Integer.parseInt(sc.nextLine());
@@ -53,9 +54,12 @@ public class Admin extends User {
     			editor.deleteResult(student);
     			break;
     		case 4:
-    			editor.updateStudent(student,system);
+    			editor.deleteRegisteredSubjects(student);
     			break;
     		case 5:
+    			editor.updateStudent(student,system);
+    			break;
+    		case 6:
     			return;
     		default:
     			 System.out.println("Invalid option. Try again.");	
